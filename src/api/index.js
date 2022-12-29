@@ -9,15 +9,37 @@ import request from '@/utils/request'
   })
 }
  */
+
 // 封装具体的接口请求方法   每个方法只负责请求一个url地址
-export const registerAPI = () => {
+/**
+ * 注册接口
+ * @param {*} param0 {username,password,repassword 用户名 密码 重复密码}
+ * @returns promise对象
+ */
+export const registerAPI = ({ username, password, repassword }) => {
   return request({
     url: '/api/reg',
     method: 'POST',
     data: {
-      username: 'lidOnGxu',
-      password: '111111',
-      repassword: '111111'
+      username,
+      password,
+      repassword
+    }
+  })
+}
+
+/**
+ * 登录接口
+ * @param {*} param0 {username:用户名  password:密码}
+ * @returns promise对象
+ */
+export const loginAPI = ({ username, password }) => {
+  return request({
+    url: '/api/login',
+    method: 'POST',
+    data: {
+      username,
+      password
     }
   })
 }
