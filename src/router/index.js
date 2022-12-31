@@ -20,7 +20,14 @@ const routes = [
   {
     path: '/',
     // 默认打开后就是这个主页
-    component: () => import('@/views/layout')
+    component: () => import('@/views/layout'),
+    redirect: '/home', // 默认显示首页的二级路由
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home')
+      }
+    ]
   }
 ]
 

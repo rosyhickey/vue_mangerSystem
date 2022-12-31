@@ -71,7 +71,8 @@
       <el-container>
         <!-- 页面主体区域 -->
         <el-main>
-          Main.vue后台主页
+          <!-- 二级路由挂载点 -->
+          <router-view></router-view>
         </el-main>
         <!-- 底部 footer 区域 -->
         <el-footer>欢迎使用小姜的管理系统</el-footer>
