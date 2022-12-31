@@ -1,6 +1,7 @@
 // 路由配置文件
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,34 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// 设置白名单 登录和注册没有token也直接放行
+const whiteList = ['/login', '/reg']
+
+// 前置路由守卫,路由跳转的时候获取新的用户信息
+router.beforeEach((to, from, next) => {
+  const token = store.state.token
+  // 查看有token值才去获取用户信息
+  // if (token && !store.state.userInfo.username) {
+  //   store.dispatch('getUserInfo')
+  // }
+  // next()
+  if (token) {
+    // 有token 登陆过了 可以往下走
+    if (!store.state.userInfo.username) {
+      store.dispatch('getUserInfo')
+    }
+    next() // 路由放行
+  } else {
+    // 如果无token但去的是白名单路径 放行
+    if (whiteList.includes(to.path)) {
+      next()
+    } else {
+      // 其他页面拦截
+      next('/login')
+    }
+  }
 })
 
 export default router

@@ -27,7 +27,47 @@
     </el-header>
     <el-container>
       <!-- 侧边栏区域 -->
-      <el-aside width="200px">Aside</el-aside>
+      <!-- <el-aside width="200px">Aside</el-aside> -->
+      <!-- 左侧边栏的用户信息 -->
+        <el-aside width="200px">
+            <div class="user-box">
+                <img :src="user_pic" alt="" v-if="user_pic" />
+                <img src="../../assets/images/logo.png" alt="" v-else />
+                <span>欢迎 {{ nickname || username }}</span>
+            </div>
+      <!-- 左侧导航菜单 -->
+      <!-- el-menu 菜单栏
+          default-cative 当前激活菜单的index值,下方菜单的index值跟它相同就显示激活高亮
+          unique-opened  是否只保持一个子菜单的展开
+       -->
+          <el-menu
+            default-active="/home"
+            class="el-menu-vertical-demo"
+            background-color="#23262E"
+            text-color="#fff"
+            active-text-color="#409EFF"
+            unique-opened:false
+            router
+          >
+            <template v-for="item in menus">
+                <!-- 不包含子菜单的“一级菜单” -->
+                <el-menu-item :index="item.indexPath" :key="item.indexPath" v-if="!item.children">
+                  <i :class="item.icon"></i>
+                  <span>{{item.title}}</span>
+                </el-menu-item>
+                <!-- 包含子菜单的“一级菜单” -->
+                <el-submenu :index="item.indexPath" :key="item.indexPath" v-else>
+                  <template slot="title">
+                    <i :class="item.icon"></i>
+                    <span>{{item.title}}</span>
+                  </template>
+                    <el-menu-item :index="subItem.indexPath" v-for="subItem in item.children" :key="subItem.indexPath">
+                      <i :class="subItem.icon"></i>{{subItem.title}}
+                    </el-menu-item>
+                </el-submenu>
+            </template>
+          </el-menu>
+        </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
         <el-main>
@@ -41,6 +81,8 @@
 </template>
 
 <script>
+import { getMenusAPI } from '@/api'
+import { mapGetters } from 'vuex'
 // 经验:在组件标签上绑定的所有事件(包括原生事件的名字click,input等等)
 // 都是自定义事件，都需要组件内$emit来触发才行
 // 万一组件内不支持这个原生事件名字
@@ -49,6 +91,15 @@
 
 export default {
   name: 'my-layout',
+  data () {
+    return {
+      menus: [] // 侧边栏菜单数据
+    }
+  },
+  created () {
+    // 调用方法
+    this.getMenusListFn()
+  },
   methods: {
     // 退出登录 点击事件
     logoutFn () {
@@ -58,13 +109,24 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          // 退出
+        // 退出
         // 删除vuex的token,再跳转去login
           this.$store.commit('updateToken', '')
           this.$router.push('/login')
+          this.$store.commit('updateUserInfo', {})
         })
         .catch((err) => err)
+    },
+    // 获取侧边栏菜单数据
+    async getMenusListFn () {
+      const { data: res } = await getMenusAPI()
+      console.log(res)
+      this.menus = res.data
     }
+  },
+  computed: {
+    // 使用map映射vuex的getter里面的数据在上面模板中使用
+    ...mapGetters(['nickname', 'username', 'user_pic'])
   }
 }
 </script>
@@ -102,5 +164,36 @@ export default {
   background-color: #fff;
   margin-right: 10px;
   object-fit: cover;
+}
+
+// 左侧边栏用户信息区域
+.user-box {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  user-select: none;
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-right: 15px;
+    object-fit: cover;
+  }
+  span {
+    color: white;
+    font-size: 12px;
+  }
+}
+// 侧边栏菜单的样式
+.el-aside {
+  .el-submenu,
+  .el-menu-item {
+    width: 200px;
+    user-select: none;
+  }
 }
 </style>
