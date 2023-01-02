@@ -78,7 +78,7 @@ export default {
         if (!valid) return false // 未通过检验
         const { data: res } = await updatePwdAPI(this.pwdForm)
         console.log(res)
-        if (res.code !== 0) return this.$message.error('更新密码失败!')
+        if (res.code !== 0) return this.$message.error('更新密码失败!原因可能是原密码不正确!')
         this.$message.success('更新密码成功!')
         this.$refs.pwdFormRef.resetFields()
         // 更新完密码后强制退出并清空token和信息

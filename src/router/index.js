@@ -24,20 +24,28 @@ const routes = [
     redirect: '/home', // 默认显示首页的二级路由
     children: [
       {
-        path: 'home',
+        path: 'home', // 首页
         component: () => import('@/views/home')
       },
       {
-        path: 'user-info',
+        path: 'user-info', // 用户更改信息
         component: () => import('@/views/user/userInfo')
       },
       {
-        path: 'user-avatar',
+        path: 'user-avatar', // 用户更改头像
         component: () => import('@/views/user/userAvatar')
       },
       {
-        path: 'user-pwd',
+        path: 'user-pwd', // 用户更改密码
         component: () => import('@/views/user/userPwd')
+      },
+      {
+        path: 'art-cate', // 文章分类
+        component: () => import('@/views/article/artCate')
+      },
+      {
+        path: 'art-list', // 文章列表
+        component: () => import('@/views/article/artList')
       }
     ]
   }
