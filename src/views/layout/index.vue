@@ -41,7 +41,7 @@
           unique-opened  是否只保持一个子菜单的展开
        -->
           <el-menu
-            default-active="/home"
+            :default-active="$route.path"
             class="el-menu-vertical-demo"
             background-color="#23262E"
             text-color="#fff"
