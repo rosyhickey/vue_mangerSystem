@@ -132,3 +132,36 @@ export const getArtCateListAPI = () => {
     url: '/my/cate/list'
   })
 }
+
+/**
+ * 添加文章分类
+ * @param {*} param0 cate_name 文章分类名字 cate_alias 文章分类别名
+ * @returns promise对象
+ */
+export const addArtCateAPI = ({ cate_name, cate_alias }) => {
+  return request({
+    url: '/my/cate/add',
+    method: 'POST',
+    data: {
+      cate_name,
+      cate_alias
+    }
+  })
+}
+
+/**
+ * 修改文章分类接口
+ * @param {*} param0 { id 分类id, cate_name 分类名字, cate_alias 分类别名 }
+ * @returns promise对象
+ */
+export const updateArtCateAPI = ({ id, cate_name, cate_alias }) => {
+  return request({
+    url: '/my/cate/info',
+    method: 'PUT',
+    data: {
+      id,
+      cate_name,
+      cate_alias
+    }
+  })
+}
