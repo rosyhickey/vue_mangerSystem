@@ -19,7 +19,7 @@
         <el-table-column label="操作">
           <template v-slot="scope">
             <el-button type="primary" size="mini" @click="updateFn(scope.row)">修改</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteCateFn(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,7 +75,7 @@
 // 3．在点击新增按钮的时候，isEdit改为false, editId置空
 // 4．在点击保存按钮时(确定按钮时)，就可以用isEdit变量做区分了
 
-import { addArtCateAPI, getArtCateListAPI, updateArtCateAPI } from '@/api'
+import { addArtCateAPI, delArtCateAPI, getArtCateListAPI, updateArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -195,6 +195,20 @@ export default {
         // 接着我们真实DOM更新后绑定好了，咱们再给数据回显
         // 注意:我们给v-model对象赋值只是影响当前显示的值，不会影响到resetFields复制的初始值
       })
+    },
+
+    // 删除分类按钮事件
+    async deleteCateFn (obj) {
+      if (confirm('确定删除吗?')) {
+        // 执行删除操作
+        const { data: res } = await delArtCateAPI(obj.id)
+        // console.log(res)
+        if (res.code !== 0) return this.$message.error(res.message)
+        this.$message.success(res.message)
+        // 删除成功重新刷新列表数据
+        this.getCateListFn()
+      }
+      return false
     }
   }
 }

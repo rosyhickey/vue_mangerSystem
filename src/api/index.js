@@ -165,3 +165,31 @@ export const updateArtCateAPI = ({ id, cate_name, cate_alias }) => {
     }
   })
 }
+
+/**
+ * 删除分类接口
+ * @param {*} id 分类id
+ * @returns promise对象
+ */
+export const delArtCateAPI = (id) => {
+  return request({
+    url: '/my/cate/del',
+    method: 'DELETE',
+    params: {
+      id
+    }
+  })
+}
+
+/**
+ * 发布文章
+ * @param {*} fd 表单对象
+ * @returns promise对象
+ */
+export const uploadArticleAPI = (fd) => {
+  return request({
+    url: '/my/article/add',
+    method: 'POST',
+    data: fd // 参数要的是表单对象 不能写普通对象 axios内部会判断 如果是表单对象 传递的请求体会设置Conten-TypeLform-data与后端对应
+  })
+}
