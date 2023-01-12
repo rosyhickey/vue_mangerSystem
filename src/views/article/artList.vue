@@ -10,6 +10,7 @@
         <el-form :inline="true" :model="q">
           <el-form-item label="文章分类">
             <el-select v-model="q.cate_id" placeholder="请选择分类" size="small">
+                <!-- 循环渲染可选项 -->
                <el-option v-for="obj in cateList" :key="obj.id" :label="obj.cate_name" :value="obj.id"></el-option>
             </el-select>
           </el-form-item>
@@ -22,8 +23,8 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" size="small">筛选</el-button>
-            <el-button type="info" size="small">重置</el-button>
+            <el-button type="primary" size="small" @click="initArtListFn">筛选</el-button>
+            <el-button type="info" size="small" @click="resetListFn">重置</el-button>
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
@@ -69,14 +70,73 @@
       </div>
 
       <!-- 文章表格区域 -->
+      <el-table :data="artList" style="width: 100%;" border stripe>
+        <el-table-column label="文章标题" prop="title">
+          <template v-slot="scope">
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{scope.row.title}}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="分类" prop="cate_name"></el-table-column>
+        <el-table-column label="发表时间" prop="pub_date">
+          <template  v-slot="scope">
+              <span>
+                {{$formatDate(scope.row.pub_date)}}
+              </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" prop="state"></el-table-column>
+        <el-table-column label="操作">
+          <!-- <template v-slot="scope"> scope里面的值是这一行row:row,所以也可以这样写 -->
+          <template v-slot="{row}">
+            <el-button type="danger" icon="el-icon-delete" @click="removeFn(row.id)"></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
       <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChangeFn"
+        @current-change="handleCurrentChangeFn"
+        :current-page.sync="q.pagenum"
+        :page-sizes="[2, 3, 5, 10]"
+        :page-size.sync="q.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </el-card>
+
+    <!-- 查看文章详情的对话框 -->
+    <el-dialog
+      title="文章预览"
+      :visible.sync="detailVisible"
+      width="80%">
+      <h1 class="title">{{artDetail.title}}</h1>
+      <div class="info">
+        <span>作者：{{artDetail.nickname||artDetail.username}}</span>
+        <span>发布时间：{{$formatDate(artDetail.pub_date)}}</span>
+        <span>所属分类：{{artDetail.cate_name}}</span>
+        <span>状态：{{artDetail.state}}</span>
+      </div>
+      <!-- 分割线 -->
+      <el-divider></el-divider>
+      <!-- 文章的封面 -->
+      <!--
+        //后端返回图片链接地址的经验:
+        //为何后端返回的图片地址是半截的?
+        //原因:因为服务器的域名可能会来回变化，所以数据库里的地址只有相对路径
+        //要求:前端请求此图片的时候，后端告诉你图片文件真身所在的服务器域名，前端自己拼接前缀
+       -->
+      <img :src="baseURL+artDetail.cover_img" alt="" />
+      <!-- 文章的详情 -->
+      <div  class="detail-box" v-html="artDetail.content"></div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getArtCateListAPI, uploadArticleAPI } from '@/api'
+import { baseURL } from '@/utils/request'
+import { getArtCateListAPI, getArtcleListAPI, getArticleDetailAPI, uploadArticleAPI, deleteArticleAPI } from '@/api'
 // 标签和样式中，引入图片文件直接写"静态路径"(把路径放在js的vue变量里再赋予是不行的)
 // 原因: webpack分析标签的时候，如果src的值是一个相对路径，它会去帮我们找到那个路径的文件并一起打包
 // 打包时候，会分析文件的大小，小图转成base64字符串再赋予给src，如果是大图拷贝图片换个路径给img的src显示(运行时)
@@ -98,12 +158,22 @@ export default {
   name: 'ArtList',
   data () {
     return {
+      baseURL: baseURL,
+
+      // 文章详情
+      artDetail: {},
+      // 文章详情对话框是否可见
+      detailVisible: false,
+
+      artList: [], // 文章的列表数据
+      total: 0, // 总数据条数
+
       // 存储分类数据
       cateList: '',
       // 查询参数对象
       q: {
         pagenum: 1,
-        pagesize: 2,
+        pagesize: 3,
         cate_id: '',
         state: ''
       },
@@ -136,9 +206,12 @@ export default {
       }
     }
   },
-  // 请求分类数据
+
   created () {
+    // 请求分类数据
     this.getCateListFn()
+    // 获取文章列表
+    this.initArtListFn()
   },
 
   methods: {
@@ -229,6 +302,10 @@ export default {
         this.$message.success(res.message)
         // 关闭对话框
         this.pubDialogVisible = false
+        // 发布成功后 刷新列表数据 重置外面的筛选页面
+        this.resetListFn()
+        // 重新请求列表数据
+        this.initArtListFn()
       })
     },
 
@@ -244,7 +321,80 @@ export default {
     // 富文本编辑器输入内容后触发事件 不再提示无内容
     contentChangeFn () {
       this.$refs.pubFormRef.validateField('content')
+    },
+
+    // 初始化文章列表
+    async initArtListFn () {
+      const { data: res } = await getArtcleListAPI(this.q)
+      // console.log(res)
+      if (res.code !== 0) return this.$message.error(res.message)
+      // this.$message.success(res.message)
+      // 将数据拉取过来
+      this.artList = res.data
+      this.total = res.total
+    },
+
+    // pageSize发生变化
+    handleSizeChangeFn (newSize) {
+      // 为pagesize赋值
+      this.q.pagesize = newSize
+      // 默认展示第一页数据
+      this.q.pagenum = 1
+      // 重新发起请求
+      this.initArtListFn()
+    },
+
+    // 页码值发生变化
+    handleCurrentChangeFn (newPage) {
+      // 为页码值赋值
+      this.q.pagenum = newPage
+      // 重新发起请求
+      this.initArtListFn()
+    },
+
+    // 重置文章列表数据
+    resetListFn () {
+      // 重置查询参数
+      this.q = {
+        pagenum: 1,
+        pagesize: 2,
+        cate_id: '',
+        state: ''
+      }
+      // 重新发起请求
+      this.initArtListFn()
+    },
+
+    // 获取文章详情
+    async showDetailFn (id) {
+      const { data: res } = await getArticleDetailAPI(id)
+      console.log(res)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      this.artDetail = res.data
+      // 展示对话框
+      this.detailVisible = true
+    },
+
+    // 删除文章
+    async removeFn (id) {
+      if (confirm('确定删除吗?')) {
+        const { data: res } = await deleteArticleAPI(id)
+        if (res.code !== 0) return this.$message.error(res.message)
+        this.$message.success('删除成功!')
+        // 刷新列表
+        this.initArtListFn()
+      }
     }
+
+    // // 关闭文章详情对话框
+    // handleClosetwo (done) {
+    //   this.$confirm('确认关闭？')
+    //     .then(_ => {
+    //       done()
+    //     })
+    //     .catch(_ => {})
+    // }
   }
 }
 
@@ -264,6 +414,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-pagination {
+  margin-top: 15px;
+}
+
 .search-box {
   display: flex;
   justify-content: space-between;
@@ -301,4 +455,26 @@ export default {
 //   /* 通过 margin 的 上外边 和 左外边的值为 元素尺寸的 -50% 时，刚好让元素偏移位置窗口的中间 */
 //   margin: -130px 0 0 -150px;
 // }
+
+.title {
+  font-size: 24px;
+  text-align: center;
+  font-weight: normal;
+  color: #000;
+  margin: 0 0 10px 0;
+}
+
+.info {
+  font-size: 12px;
+  span {
+    margin-right: 20px;
+  }
+}
+
+// 修改 dialog 内部元素的样式，需要添加样式穿透
+::v-deep .detail-box {
+  img {
+    width: 500px;
+  }
+}
 </style>
