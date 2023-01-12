@@ -382,9 +382,21 @@ export default {
         const { data: res } = await deleteArticleAPI(id)
         if (res.code !== 0) return this.$message.error(res.message)
         this.$message.success('删除成功!')
+        // bug处理
+        // 1的原因:虽然你调用删除接口但是那是后端删除，前端数组里你没有代码去修改它
+        if (this.artList.length === 1) {
+          if (this.artList.length > 1) { // 保证pagenum最小为1
+            this.q.pagenum--
+          }
+        }
         // 刷新列表
         this.initArtListFn()
       }
+
+      // 问题:在最后一页，删除最后一条时，虽然页码能回到上一页，但是数据没有出现
+      // 原因:发现network里参数q. pagenum的值不会自己回到上一页，因为你的代码里没有修改过这个q. pagenum值,
+      // 用getArticleFn方法,带着之前的参数请求去了所以没数据
+      // 解决:在调用接口以后，刷新数组列表之前，对页码最一下处理
     }
 
     // // 关闭文章详情对话框
