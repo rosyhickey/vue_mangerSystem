@@ -4,25 +4,25 @@
       <el-row class="spannel_list" :gutter="10">
         <el-col :sm="6" :xs="12">
           <div class="spannel">
-            <em>10015</em><span>篇</span>
+            <em>4399</em><span>篇</span>
             <b>总文章数</b>
           </div>
         </el-col>
         <el-col :sm="6" :xs="12">
           <div class="spannel scolor01">
-            <em>123</em><span>篇</span>
+            <em>25</em><span>篇</span>
             <b>日新增文章数</b>
           </div>
         </el-col>
         <el-col :sm="6" :xs="12">
           <div class="spannel scolor02">
-            <em>35</em><span>条</span>
+            <em>100</em><span>条</span>
             <b>评论总数</b>
           </div>
         </el-col>
         <el-col :sm="6" :xs="12">
           <div class="spannel scolor03">
-            <em>123</em><span>条</span>
+            <em>15</em><span>条</span>
             <b>日新增评论数</b>
           </div>
         </el-col>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 // echarts内部用的是命名导出 export const变量名多个
 // 正常导入 import {变量名，变量名 } from 'echarts’得一个个导出来
 // 目的:但是现在我想导入所有，形成一个对象使用
@@ -67,36 +68,36 @@ export default {
       // 绘制面积图表
       // 数据源(模拟后台返回的数据)
       const aListAll = [
-        { count: 36, date: '2019-04-13' },
-        { count: 52, date: '2019-04-14' },
-        { count: 78, date: '2019-04-15' },
-        { count: 85, date: '2019-04-16' },
-        { count: 65, date: '2019-04-17' },
-        { count: 72, date: '2019-04-18' },
-        { count: 88, date: '2019-04-19' },
-        { count: 64, date: '2019-04-20' },
-        { count: 72, date: '2019-04-21' },
-        { count: 90, date: '2019-04-22' },
-        { count: 96, date: '2019-04-23' },
-        { count: 100, date: '2019-04-24' },
-        { count: 102, date: '2019-04-25' },
-        { count: 110, date: '2019-04-26' },
-        { count: 123, date: '2019-04-27' },
-        { count: 100, date: '2019-04-28' },
-        { count: 132, date: '2019-04-29' },
-        { count: 146, date: '2019-04-30' },
-        { count: 200, date: '2019-05-01' },
-        { count: 180, date: '2019-05-02' },
-        { count: 163, date: '2019-05-03' },
-        { count: 110, date: '2019-05-04' },
-        { count: 80, date: '2019-05-05' },
-        { count: 82, date: '2019-05-06' },
-        { count: 70, date: '2019-05-07' },
-        { count: 65, date: '2019-05-08' },
-        { count: 54, date: '2019-05-09' },
-        { count: 40, date: '2019-05-10' },
-        { count: 45, date: '2019-05-11' },
-        { count: 38, date: '2019-05-12' }
+        { count: 36, date: '2024-04-13' },
+        { count: 52, date: '2024-04-14' },
+        { count: 78, date: '2024-04-15' },
+        { count: 85, date: '2024-04-16' },
+        { count: 65, date: '2024-04-17' },
+        { count: 72, date: '2024-04-18' },
+        { count: 88, date: '2024-04-19' },
+        { count: 64, date: '2024-04-20' },
+        { count: 72, date: '2024-04-21' },
+        { count: 90, date: '2024-04-22' },
+        { count: 96, date: '2024-04-23' },
+        { count: 100, date: '2024-04-24' },
+        { count: 102, date: '2024-04-25' },
+        { count: 110, date: '2024-04-26' },
+        { count: 123, date: '2024-04-27' },
+        { count: 100, date: '2024-04-28' },
+        { count: 132, date: '2024-04-29' },
+        { count: 146, date: '2024-04-30' },
+        // { count: 200, date: '2024-05-01' },
+        // { count: 180, date: '2024-05-02' },
+        // { count: 163, date: '2024-05-03' },
+        // { count: 110, date: '2024-05-04' },
+        // { count: 80, date: '2024-05-05' },
+        // { count: 82, date: '2024-05-06' },
+        // { count: 70, date: '2024-05-07' },
+        // { count: 65, date: '2024-05-08' },
+        // { count: 54, date: '2024-05-09' },
+        // { count: 40, date: '2024-05-10' },
+        // { count: 45, date: '2024-05-11' },
+        // { count: 38, date: '2024-05-12' }
       ]
 
       // 但是图标要求直接给数字的值, 所以要把对象的值取出来形成2个只有值的数组
@@ -188,7 +189,7 @@ export default {
         legend: { // 图例组件
           x: 'center',
           top: 65,
-          data: ['奇趣事', '会生活', '爱旅行', '趣美味'] // 每个部分对应的数据名(要和series里name对应)
+          data: ['科技', '生活', '旅行', '新闻'] // 每个部分对应的数据名(要和series里name对应)
         },
         toolbox: { // 工具箱
           show: true,
@@ -220,10 +221,10 @@ export default {
             radius: ['45%', '60%'],
             center: ['50%', '65%'],
             data: [
-              { value: 300, name: '奇趣事' },
-              { value: 100, name: '会生活' },
-              { value: 260, name: '爱旅行' },
-              { value: 180, name: '趣美味' }
+              { value: 300, name: '科技' },
+              { value: 100, name: '生活' },
+              { value: 260, name: '旅行' },
+              { value: 180, name: '新闻' }
             ]
           }
         ]
@@ -243,7 +244,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: ['奇趣事', '会生活', '爱旅行', '趣美味'],
+          data: ['科技', '生活', '旅行', '新闻'],
           top: '40'
         },
         toolbox: {
@@ -270,7 +271,7 @@ export default {
         ],
         series: [
           {
-            name: '奇趣事',
+            name: '科技',
             type: 'bar',
             barWidth: 20,
             areaStyle: { type: 'default' },
@@ -280,7 +281,7 @@ export default {
             data: [800, 708, 920, 1090, 1200]
           },
           {
-            name: '会生活',
+            name: '生活',
             type: 'bar',
             barWidth: 20,
             areaStyle: { type: 'default' },
@@ -290,7 +291,7 @@ export default {
             data: [400, 468, 520, 690, 800]
           },
           {
-            name: '爱旅行',
+            name: '旅行',
             type: 'bar',
             barWidth: 20,
             areaStyle: { type: 'default' },
@@ -300,7 +301,7 @@ export default {
             data: [500, 668, 520, 790, 900]
           },
           {
-            name: '趣美味',
+            name: '新闻',
             type: 'bar',
             barWidth: 20,
             areaStyle: { type: 'default' },

@@ -46,7 +46,11 @@ export default {
       userFormRules: {
         nickname: [
           { required: true, message: '请输入用户昵称', trigger: 'blur' },
-          { pattern: /^\S{1,10}$/, message: '昵称必须是1-10位的非空字符串', trigger: 'blur' }
+          {
+            pattern: /^\S{1,10}$/,
+            message: '昵称必须是1-10位的非空字符串',
+            trigger: 'blur'
+          }
         ],
         email: [
           { required: true, message: '请输入用户邮箱', trigger: 'blur' },
@@ -60,7 +64,7 @@ export default {
     submitFn () {
       // 验证表单合法性
       this.$refs.userFormRef.validate(
-        async valid => {
+        /*         async valid => {
           if (valid) {
             // 验证成功
             console.log(this.userForm)
@@ -78,6 +82,28 @@ export default {
           } else {
             // 验证失败
             return false
+          }
+        } */
+        (valid) => {
+          if (valid) {
+            // 验证成功
+            console.log(this.userForm)
+            // 根据接口文档指示,需要携带id(必须)
+            this.userForm.id = this.$store.state.userInfo.id
+            // 调用更新用户基本信息接口,把用户在页面输入的新内容传给后台保存
+            updateUserInfoAPI(this.userForm).then(
+              (data) => {
+                if (data.res.code !== 0) return this.$message.error('更新信息失败!')
+                // 更新信息成功,刷新vuex中的数据
+                this.$message.success('更新成功!')
+                // 重新让vuex获取下最新的用户数据
+                this.$store.dispatch('getUserInfo')
+                // 清空表单
+                this.$refs.userFormRef.resetFields()
+              }
+            ).catch((err) => {
+              console.log(err.message)
+            })
           }
         }
       )

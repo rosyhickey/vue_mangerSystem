@@ -114,14 +114,15 @@ export default {
 
 <style lang="less" scoped>
 .reg-container {
-  background: url("../../assets/images/login_bg.jpg") center;
+  background: url("../../assets/images/3.jpeg") center;
   background-size: cover;
-  height: 100%;
+  height: 800px;
 
   .reg-box {
     width: 400px;
     height: 335px;
-    background-color: #fff;
+    // background-color: #fff;
+    background-color: #00000060;
     border-radius: 3px;
     position: absolute;
     left: 50%;

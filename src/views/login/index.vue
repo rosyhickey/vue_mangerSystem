@@ -62,7 +62,6 @@ export default {
   methods: {
     // 映射mutations里面的updateToken函数
     ...mapMutations(['updateToken']),
-
     loginFn () {
       // 登录校验
       this.$refs.loginRef.validate(async valid => {
@@ -85,14 +84,15 @@ export default {
 
 <style lang="less" scoped>
 .login-container {
-  background: url('../../assets/images/login_bg.jpg') center;
+  background: url('../..//assets/images/1.jpg') center;
   background-size: cover;
-  height: 100%;
+  height: 800px;
 
   .login-box {
     width: 400px;
     height: 270px;
-    background-color: #fff;
+    // background-color: #fff;
+    background-color: #00000060;
     border-radius: 3px;
     position: absolute;
     left: 50%;

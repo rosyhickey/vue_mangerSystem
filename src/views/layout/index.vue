@@ -3,15 +3,11 @@
     <!-- 头部区域 -->
     <el-header>
       <!-- 左侧的 logo -->
-      <img src="../../assets/images/logo.png" alt="" />
+      <!-- <img src="../../assets/images/logo.png" alt="" /> -->
+      <h3 style="color:#ffffff;margin-left:20px">rosyhickey文章管理系统</h3>
       <!-- 右侧的菜单 -->
-      <el-menu
-        class="el-menu-top"
-        mode="horizontal"
-        background-color="#23262E"
-        text-color="#fff"
-        active-text-color="#409EFF"
-      >
+      <el-menu class="el-menu-top" mode="horizontal" background-color="#23262E" text-color="#fff"
+        active-text-color="#409EFF">
         <el-submenu index="1">
           <template slot="title">
             <!-- 头像 -->
@@ -19,9 +15,9 @@
             <img v-else src="../../assets/images/logo.png" alt="" class="avatar" />
             <span>个人中心</span>
           </template>
-          <el-menu-item  @click="tiaozhuan1"><i class="el-icon-s-operation"></i>基本资料</el-menu-item>
-          <el-menu-item  @click="tiaozhuan2"><i class="el-icon-camera"></i>更换头像</el-menu-item>
-          <el-menu-item  @click="tiaozhuan3"><i class="el-icon-key"></i>重置密码</el-menu-item>
+          <el-menu-item @click="tiaozhuan1"><i class="el-icon-s-operation"></i>基本资料</el-menu-item>
+          <el-menu-item @click="tiaozhuan2"><i class="el-icon-camera"></i>更换头像</el-menu-item>
+          <el-menu-item @click="tiaozhuan3"><i class="el-icon-key"></i>重置密码</el-menu-item>
         </el-submenu>
         <el-menu-item index="2" @click="logoutFn"><i class="el-icon-switch-button"></i>退出</el-menu-item>
       </el-menu>
@@ -30,45 +26,44 @@
       <!-- 侧边栏区域 -->
       <!-- <el-aside width="200px">Aside</el-aside> -->
       <!-- 左侧边栏的用户信息 -->
-        <el-aside width="200px">
-            <div class="user-box">
-                <img :src="user_pic" alt="" v-if="user_pic" />
-                <img src="../../assets/images/logo.png" alt="" v-else />
-                <span>欢迎 {{ nickname || username }}</span>
-            </div>
-      <!-- 左侧导航菜单 -->
-      <!-- el-menu 菜单栏
+      <el-aside width="200px">
+        <div class="user-box">
+          <img :src="user_pic" alt="" v-if="user_pic" />
+          <img src="../../assets/images/logo.png" alt="" v-else />
+          <span>欢迎 {{ nickname || username }}</span>
+        </div>
+        <!-- 左侧导航菜单 -->
+        <!-- el-menu 菜单栏
           default-cative 当前激活菜单的index值,下方菜单的index值跟它相同就显示激活高亮
           unique-opened  是否只保持一个子菜单的展开
        -->
-          <el-menu
-            :default-active="$route.path"
-            class="el-menu-vertical-demo"
-            background-color="#23262E"
-            text-color="#fff"
-            active-text-color="#409EFF"
-            unique-opened:false
-            router
-          >
-            <template v-for="item in menus">
-                <!-- 不包含子菜单的“一级菜单” -->
-                <el-menu-item :index="item.indexPath" :key="item.indexPath" v-if="!item.children">
-                  <i :class="item.icon"></i>
-                  <span>{{item.title}}</span>
-                </el-menu-item>
-                <!-- 包含子菜单的“一级菜单” -->
-                <el-submenu :index="item.indexPath" :key="item.indexPath" v-else>
-                  <template slot="title">
-                    <i :class="item.icon"></i>
-                    <span>{{item.title}}</span>
-                  </template>
-                    <el-menu-item :index="subItem.indexPath" v-for="subItem in item.children" :key="subItem.indexPath">
-                      <i :class="subItem.icon"></i>{{subItem.title}}
-                    </el-menu-item>
-                </el-submenu>
-            </template>
-          </el-menu>
-        </el-aside>
+        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" background-color="#23262E"
+          text-color="#fff" active-text-color="#409EFF" unique-opened:false router>
+          <template v-for="item in menus">
+            <!-- 不包含子菜单的“一级菜单” -->
+            <el-menu-item :index="item.indexPath" :key="item.indexPath" v-if="!item.children">
+              <i :class="item.icon"></i>
+              <span>{{item.title}}</span>
+            </el-menu-item>
+            <!-- 包含子菜单的“一级菜单” -->
+            <el-submenu :index="item.indexPath" :key="item.indexPath" v-else>
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{item.title}}</span>
+              </template>
+              <el-menu-item :index="subItem.indexPath" v-for="subItem in item.children" :key="subItem.indexPath">
+                <i :class="subItem.icon"></i>{{subItem.title}}
+              </el-menu-item>
+            </el-submenu>
+          </template>
+        </el-menu>
+        <!-- eslint-disable-next-line  -->
+        <div class="el-submenu__title"
+          style="padding-left: 20px; color: rgb(255, 255, 255); background-color: rgb(35, 38, 46);">
+          <i class="el-icon-user-solid" style="font-size: 20px;"></i>
+          <span style="margin-left: 10px;" @click="toCsdn">我的csdn</span>
+        </div>
+      </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
         <el-main>
@@ -76,7 +71,7 @@
           <router-view></router-view>
         </el-main>
         <!-- 底部 footer 区域 -->
-        <el-footer>欢迎使用小姜的管理系统</el-footer>
+        <el-footer>欢迎使用rosyhickey的管理系统</el-footer>
       </el-container>
     </el-container>
   </el-container>
@@ -134,6 +129,11 @@ export default {
     },
     tiaozhuan3 () {
       this.$router.push('/user-pwd')
+    },
+    // 跳转csdn
+    toCsdn () {
+      // eslint-disable-next-line
+      location.href = 'https://blog.csdn.net/p_s_p?spm=1000.2115.3001.5343';
     }
   },
   computed: {
